@@ -7,6 +7,9 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, '../build')
 	},
+	resolve: {
+		extensions: ['.js', '.jsx', '.json', '.ts', '.tsx']
+	},
 	plugins: [
 		new EnvironmentPlugin({
 			NODE_ENV: 'development',

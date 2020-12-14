@@ -17,7 +17,8 @@
 	},
 	"rules": {
 		// "no-undef":"error"
-		"no-unused-vars":"warn"
+		"no-unused-vars":"warn",
+		"prefer-const":"off"
 	},
 	"overrides": [
 		{ "files": ["*.js"], "rules": { "@typescript-eslint/no-var-requires": 0 } }

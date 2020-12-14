@@ -8,29 +8,37 @@
     "build:web": "webpack --config=config/webpack.config.renderer.js",
     "build:preload": "webpack --config=config/webpack.config.preload.js",
     "dev": "webpack serve --config=config/webpack.config.renderer.js",
-    "start": "yarn build:main && yarn build:preload && electron ."
+    "start:main": "yarn build:main && yarn build:preload && electron ."
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/electron": "^1.6.10",
     "@types/node": "^14.14.10",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
     "@typescript-eslint/parser": "^4.9.1",
     "babel-loader": "^8.2.2",
-    "cross-env": "^7.0.3",
     "electron": "^11.1.0",
+    "electron-devtools-installer": "^3.1.1",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
     "eslint-plugin-prettier": "^3.2.0",
     "html-webpack-plugin": "^4.5.0",
     "prettier": "^2.2.1",
+    "react-refresh": "^0.9.0",
     "typescript": "^4.1.2",
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^5.4.1"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }

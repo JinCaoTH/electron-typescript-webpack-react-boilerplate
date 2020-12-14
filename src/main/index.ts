@@ -1,20 +1,25 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import installExtension, {
+	REACT_DEVELOPER_TOOLS
+} from 'electron-devtools-installer';
 
-// const windows: BrowserWindow[] = [];
-const mainWindow: BrowserWindow | null = null;
-// const secondWindow: BrowserWindow | null = null;
-const createWindow = async (window = 'main') => {
-	let mainWindow = new BrowserWindow({
+const port = process.env.PORT || 9000;
+
+let mainWindow: BrowserWindow | null = null;
+let secondWindow: BrowserWindow | null = null;
+
+const createMainWindow = async () => {
+	mainWindow = new BrowserWindow({
 		show: false,
 		width: 1024,
 		height: 728,
 		webPreferences: {
 			contextIsolation: true,
-			preload: path.resolve(__dirname, `${window}Preload.bundle.js`)
+			preload: path.resolve(__dirname, 'mainPreload.bundle.js')
 		}
 	});
-	mainWindow.loadURL(`http://localhost:9000/${window}.html`);
+	mainWindow.loadURL(`http://localhost:${port}/main.html`);
 	mainWindow.webContents.on('did-finish-load', () => {
 		if (!mainWindow) {
 			throw new Error('"mainWindow" is not defined');
@@ -26,28 +31,51 @@ const createWindow = async (window = 'main') => {
 			mainWindow.focus();
 		}
 	});
-	// const i = windows.length;
 	mainWindow.on('closed', () => {
 		mainWindow = null;
 	});
 };
 
-ipcMain.on('open-second-window', function (event, arg) {
-	console.log(event);
-	console.log(arg);
+ipcMain.on('open-second-window', function () {
+	if (secondWindow === null) {
+		secondWindow = new BrowserWindow({
+			show: false,
+			width: 800,
+			height: 600,
+			webPreferences: {
+				contextIsolation: true,
+				preload: path.resolve(__dirname, 'secondPreload.bundle.js')
+			}
+		});
+		secondWindow.loadURL(`http://localhost:${port}/second.html`);
+		secondWindow.webContents.on('did-finish-load', () => {
+			if (!secondWindow) {
+				throw new Error('"mainWindow" is not defined');
+			}
+			secondWindow.show();
+		});
+		secondWindow.on('closed', () => {
+			secondWindow = null;
+		});
+	} else {
+		secondWindow.focus();
+	}
 });
 app.on('window-all-closed', () => {
-	// Respect the OSX convention of having the application in memory even
-	// after all windows have been closed
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
 });
 
-app.whenReady().then(createWindow).catch(console.log);
+app.whenReady()
+	.then(() => {
+		installExtension(REACT_DEVELOPER_TOOLS)
+			.then((name) => console.log(`Added Extension:  ${name}`))
+			.catch((err) => console.log('An error occurred: ', err));
+	})
+	.then(createMainWindow)
+	.catch(console.log);
 
-app.on('activate', () => {
-	// On macOS it's common to re-create a window in the app when the
-	// dock icon is clicked and there are no other windows open.
-	if (mainWindow === null) createWindow();
+app.on('activate', function activate() {
+	if (mainWindow === null) createMainWindow();
 });
